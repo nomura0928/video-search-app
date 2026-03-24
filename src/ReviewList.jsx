@@ -8,12 +8,10 @@ const ReviewList = ({ Ratings }) => {
                 <table>
                     <tbody>
                         {Ratings.map((data) =>
-                            <>
-                            <tr>
+                            <tr key={data.Source}>
                                 <th className='source'>{data.Source} :</th>
                                 <td>{data.Value}</td>
                             </tr>
-                            </>
                         )}
                     </tbody>
                 </table>
