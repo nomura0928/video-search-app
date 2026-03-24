@@ -24,7 +24,7 @@ function App() {
     }
   }
 
-  useEffect(() => console.log(filmInfo), [, filmInfo]);
+  useEffect(() => console.log(filmInfo), [filmInfo]);
 
   return (
     <>
