@@ -15,6 +15,7 @@ function App() {
     const year = filmYear.current.value;
     if (!name) return;
     try {
+      //awaitで非同期処理が完了するまで待つ
       const res = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&t=${name}&y=${year}`);
       console.log(res);
       const data = await res.json();
@@ -28,10 +29,12 @@ function App() {
 
   return (
     <>
+    {/*ルーティング機能を有効にする範囲を囲む　Link,Route*/}
       <BrowserRouter>
         <header>
           <h1>Video Search</h1>
           <nav className="header-nav">
+            {/*ページリロードなしでURLを切り替えるリンク*/}
             <Link className='link' to={'/'}>検索</Link>
             <Link className='link' to={'/favorite'}>お気に入り</Link>
           </nav>
@@ -53,6 +56,7 @@ function App() {
         </section>
         <section className='film-info'>
           <Routes>
+            {/* リンクごとに表示する内容を切り替える */}
           <Route path='/' element={<Information data={filmInfo} />} />
           <Route path='/favorite' element={<FavoriteList/>} />
           </Routes>
