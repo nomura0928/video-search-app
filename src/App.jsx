@@ -10,7 +10,8 @@ function App() {
   const filmYear = useRef();
   const [filmInfo, setInfo] = useState(null);
 
-  const getInfo = async () => {
+  const getInfo = async (e) => {
+    e.preventDefault();
     const name = filmName.current.value;
     const year = filmYear.current.value;
     if (!name) return;
@@ -39,7 +40,7 @@ function App() {
             <Link className='link' to={'/favorite'}>お気に入り</Link>
           </nav>
         </header>
-        <section className='search-section'>
+        <form onSubmit={getInfo} className='search-section'>
           <div className="input-left">
             <label className='search-div'>
               <span className='input-info'>タイトル</span>
@@ -51,9 +52,9 @@ function App() {
             </label>
           </div>
           <div className="input-right">
-            <button className='button' onClick={getInfo}>Search</button>
+            <button className='button' type='submit'>Search</button>
           </div>
-        </section>
+        </form>
         <section className='film-info'>
           <Routes>
             {/* リンクごとに表示する内容を切り替える */}
