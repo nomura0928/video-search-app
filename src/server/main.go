@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
-	"os"
 	"strings"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "modernc.org/sqlite"
 )
 
 // 構造体を定義
@@ -19,18 +18,21 @@ type Item struct {
 }
 
 func main() {
-	// 環境変数からDB接続情報を取得
-	dbHost := os.Getenv("DB_HOST")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", dbUser, dbPassword, dbHost, dbName)
-	db, err := sql.Open("mysql", dsn)
+	// SQLiteのDBファイルを開く（なければ自動作成）
+	db, err := sql.Open("sqlite", "./test.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
+
+	// テーブルが存在しない場合は作成
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS items (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT NOT NULL
+	)`)
+	if err != nil {
+		log.Fatalf("Failed to create table: %v", err)
+	}
 
 	// itemsにGETリクエストがあった場合の処理
 	http.HandleFunc("/items", func(w http.ResponseWriter, r *http.Request) {
