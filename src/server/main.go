@@ -13,7 +13,7 @@ import (
 
 // 構造体を定義
 type Item struct {
-	ID   int    `json:"id"`
+	ID   int    `json:"id"` //jsonでのキー名を指定
 	Name string `json:"name"`
 }
 
@@ -21,11 +21,12 @@ func main() {
 	// SQLiteのDBファイルを開く（なければ自動作成）
 	db, err := sql.Open("sqlite", "./test.db")
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Fatalf("Failed to connect to database: %v", err) //Fatalで強制終了
 	}
-	defer db.Close()
+	defer db.Close() //deferで関数の終わりにコードを実行
 
 	// テーブルが存在しない場合は作成
+	// SELECTのときは.Query、それ以外の時は.Exec
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS items (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT NOT NULL
