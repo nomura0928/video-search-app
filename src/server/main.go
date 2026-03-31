@@ -41,8 +41,6 @@ func main() {
 			handleGetItems(w, r, db)
 		} else if r.Method == http.MethodPost {
 			handlePostItem(w, r, db)
-		} else if r.Method == http.MethodDelete {
-			handleDelete(w, r, db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		}
