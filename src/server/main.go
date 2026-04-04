@@ -73,8 +73,10 @@ func handleGetItems(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	// 取得したデータを格納するスライスを定義
 	var items []Item
+	//ひとつずつ取り出す
 	for rows.Next() {
 		var item Item
+		//Scanで読み込む、変数のポインタを渡す
 		if err := rows.Scan(&item.ID, &item.Name); err != nil {
 			http.Error(w, fmt.Sprintf("Row scan failed: %v", err), http.StatusInternalServerError)
 			return
@@ -104,6 +106,7 @@ func handlePostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
+	//prepareでSQL文を準備
 	stmt, err := db.Prepare("INSERT INTO items(name) VALUES(?)")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v", err), http.StatusInternalServerError)
