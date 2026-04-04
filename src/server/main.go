@@ -114,15 +114,22 @@ func handlePostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(item.Name)
+	result, err := stmt.Exec(item.Name)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	// w.WriteHeader(http.StatusCreated)
-	// w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(item)
+	id, err := result.LastInsertId()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to get last insert id: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	item.ID = int(id)
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(item)
 }
 
 func handleDelete(w http.ResponseWriter, r *http.Request, db *sql.DB) {
