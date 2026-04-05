@@ -17,7 +17,7 @@ type Rating struct {
 }
 
 type Info struct {
-imdbID string `json:imdbID`
+    imdbID string `json:imdbID`
 	Title string `json:Title`
 	Year string `json:Year`
 	Genre string `json:Genre`
@@ -27,6 +27,27 @@ imdbID string `json:imdbID`
 	Actor string `json:Actor`
 	Ratings Rating `json:Ratings`
 	Plot string `json:Plot`
+}
+
+func main() {
+	db, err := sql.Open("sqlite", "./favoritelist.db")
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer db.Close()
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS favoritelist (
+	imbdID PRIMARY KEY NOT NULL,
+	Title TEXT NOT NULL,
+	Year TEXT NOT NULL,
+	Genre TEXT NOT NULL,
+	Type TEXT NOT NULL,
+	Director TEXT NOT NULL,
+	Writer TEXT NOT NULL,
+	Actor TEXT NOT NULL,
+	Ratings TEXT NOT NULL,
+	Plot TEXT NOT NULL
+	)`)
 }
 
 //参考用コード
