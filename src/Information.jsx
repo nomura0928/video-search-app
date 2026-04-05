@@ -25,7 +25,8 @@ const Information = ({ data }) => {
             <>
                 <figure className='info-top'>
                     <div>
-                        <img src={data.Poster} alt="src/assets/noimage.jpg" />
+                    {/* posterが表示できないとき、代替画像を表示 */}
+                        <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'} />
                     </div>
                     <figcaption className='figcaption'>
                         <table>
