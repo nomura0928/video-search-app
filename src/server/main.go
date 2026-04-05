@@ -11,6 +11,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+//参考用コード
 // // 構造体を定義
 // type Item struct {
 // 	ID   int    `json:"id"` //jsonでのキー名を指定
