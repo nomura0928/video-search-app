@@ -24,9 +24,10 @@ const Information = ({ data }) => {
         return (
             <>
                 <figure className='info-top'>
-                    <div>
+                    <div className='poster-div'>
                     {/* posterが表示できないとき、代替画像を表示 */}
                         <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'} />
+                        <button className='favorite-button'>お気に入り登録</button>
                     </div>
                     <figcaption className='figcaption'>
                         <table>

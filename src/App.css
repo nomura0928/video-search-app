@@ -77,6 +77,13 @@ input:hover {
   justify-content: center;
 }
 
+.poster-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 .figcaption {
   margin-left: 15px;
 }
@@ -111,4 +118,21 @@ th, td {
 
 .source {
   text-align: right;
+}
+
+.favorite-button {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 20px;
+  background-color: #353553;
+  color: #acb3ff;
+  border: 1px solid #565769;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.favorite-button:hover {
+  background-color: #acb3ff;
+  color: #1A1A1D;
 }
