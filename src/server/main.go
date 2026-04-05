@@ -26,7 +26,6 @@ func main() {
 	defer db.Close() //deferで関数の終わりにコードを実行
 
 	// テーブルが存在しない場合は作成
-	// SELECTのときは.Query、それ以外の時は.Exec
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS items (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT NOT NULL
@@ -63,6 +62,7 @@ func main() {
 
 func handleGetItems(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// データベースからデータを取得
+	// SELECTのときは.Query、それ以外の時は.Exec
 	rows, err := db.Query("SELECT id, name FROM items")
 	// エラーハンドリング
 	if err != nil {
@@ -106,7 +106,7 @@ func handlePostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	//prepareでSQL文を準備
+	//prepareでSQLi対策
 	stmt, err := db.Prepare("INSERT INTO items(name) VALUES(?)")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v", err), http.StatusInternalServerError)
@@ -148,6 +148,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request, db *sql.DB) {
         return
 	}
 
+	//削除された行数を取得
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
         http.Error(w, fmt.Sprintf("Failed to retrieve affected rows: %v", err), http.StatusInternalServerError)
@@ -161,6 +162,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request, db *sql.DB) {
         msg = "Successfully delete a item"
     }
 
+	//メッセージを書き込む
     response := map[string]string {"message": msg}
     w.WriteHeader(http.StatusOK)
     w.Header().Set("Content-Type", "application/json")
