@@ -17,15 +17,16 @@ type Rating struct {
 }
 
 type Info struct {
+imdbID string `json:imdbID`
 	Title string `json:Title`
 	Year string `json:Year`
-	Genre string `json/Genre`
-	Type string `json/Type`
-	Director string `json/Genre`
-	Writer string `json/Writer`
-	Actor string `json/Actor`
-	Ratings Rating `json/Ratings`
-	Plot string `json/Plot`
+	Genre string `json:Genre`
+	Type string `json:Type`
+	Director string `json:Genre`
+	Writer string `json:Writer`
+	Actor string `json:Actor`
+	Ratings Rating `json:Ratings`
+	Plot string `json:Plot`
 }
 
 //参考用コード
