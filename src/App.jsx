@@ -58,7 +58,7 @@ function App() {
         <section className='film-info'>
           <Routes>
             {/* リンクごとに表示する内容を切り替える */}
-          <Route path='/' element={<Information data={filmInfo} />} />
+          <Route path='/search' element={<Information data={filmInfo} />} />
           <Route path='/favorite' element={<FavoriteList/>} />
           </Routes>
         </section>
