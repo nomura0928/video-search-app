@@ -61,7 +61,7 @@ function App() {
             {/* NavigateでURLを自動的に変更 */}
           <Route path='/' element={<Navigate to='/search'/>} />
           <Route path='/search' element={<Information data={filmInfo} />} />
-          <Route path='/favorite' element={<FavoriteList/>} />
+          <Route path='/favorites' element={<FavoriteList/>} />
           </Routes>
         </section>
       </BrowserRouter>
