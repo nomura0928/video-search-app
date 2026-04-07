@@ -28,6 +28,7 @@ type Info struct {
 	Ratings []Rating `json:Ratings`
 	Plot string `json:Plot`
 	Poster string `json:Poster`
+	Response string `json:Response`
 }
 
 type DBInfo struct {
