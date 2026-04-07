@@ -52,6 +52,24 @@ func main() {
 	Year TEXT NOT NULL,
 	Poster TEXT NOT NULL
 	)`)
+
+	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+
+		} else if r.Method == http.MethodDelete {
+
+		} else {
+			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/fovorites", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+
+		} else {
+			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		}
+	})
 }
 
 //参考用コード
