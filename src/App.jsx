@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes, Navigate } from 'react-router-dom'
 import './App.css'
 import Information from './Information';
 import FavoriteList from './FavoriteList';
@@ -36,7 +36,7 @@ function App() {
           <h1>Video Search</h1>
           <nav className="header-nav">
             {/*ページリロードなしでURLを切り替えるリンク*/}
-            <Link className='link' to={'/'}>検索</Link>
+            <Link className='link' to={'/search'}>検索</Link>
             <Link className='link' to={'/favorite'}>お気に入り</Link>
           </nav>
         </header>
@@ -58,6 +58,8 @@ function App() {
         <section className='film-info'>
           <Routes>
             {/* リンクごとに表示する内容を切り替える */}
+            {/* NavigateでURLを自動的に変更 */}
+          <Route path='/' element={<Navigate to='/search'/>} />
           <Route path='/search' element={<Information data={filmInfo} />} />
           <Route path='/favorite' element={<FavoriteList/>} />
           </Routes>
