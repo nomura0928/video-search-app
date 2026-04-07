@@ -27,21 +27,16 @@ type Info struct {
 	Actor string `json:Actor`
 	Ratings []Rating `json:Ratings`
 	Plot string `json:Plot`
+	Poster string `json:Poster`
 }
 
-//DB用に配列を文字列に変換
 type DBInfo struct {
-    imdbID string `json:imdbID`
+	imdbID string `json:imdbID`
 	Title string `json:Title`
 	Year string `json:Year`
-	Genre string `json:Genre`
-	Type string `json:Type`
-	Director string `json:Genre`
-	Writer string `json:Writer`
-	Actor string `json:Actor`
-	Ratings string `json:Ratings`
-	Plot string `json:Plot`
+	Poster string `json:Poster`
 }
+
 
 func main() {
 	db, err := sql.Open("sqlite", "./favoritelist.db")
@@ -54,13 +49,7 @@ func main() {
 	imbdID PRIMARY KEY NOT NULL,
 	Title TEXT NOT NULL,
 	Year TEXT NOT NULL,
-	Genre TEXT NOT NULL,
-	Type TEXT NOT NULL,
-	Director TEXT NOT NULL,
-	Writer TEXT NOT NULL,
-	Actor TEXT NOT NULL,
-	Ratings TEXT NOT NULL,
-	Plot TEXT NOT NULL
+	Poster TEXT NOT NULL
 	)`)
 }
 
