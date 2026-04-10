@@ -47,7 +47,7 @@ func main() {
 	defer db.Close()
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS favoritelist (
-	imbdID PRIMARY KEY NOT NULL,
+	imdbID PRIMARY KEY NOT NULL,
 	Title TEXT NOT NULL,
 	Year TEXT NOT NULL,
 	Poster TEXT NOT NULL
@@ -55,9 +55,9 @@ func main() {
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			HundleAddToList(w,r,db)
+			HandleAddToList(w,r,db)
 		} else if r.Method == http.MethodDelete {
-			HundleDeleteFromList(w,r,db)
+			HandleDeleteFromList(w,r,db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		}
@@ -75,7 +75,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func HundleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
+func HandleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	var info DBInfo
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&info); err != nil {
@@ -83,7 +83,7 @@ func HundleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 		return
 	}
 
-	stmt, err := db.Prepare("INSERT INTO favoritelist (imbdID,Title,Year,Poster) VALUES (?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO favoritelist (imdbID,Title,Year,Poster) VALUES (?,?,?,?)")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query filed: %v", err), http.StatusInternalServerError)
 		return
@@ -101,7 +101,7 @@ func HundleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	json.NewEncoder(w).Encode(info)
 }
 
-func HundleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
+func HandleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	var info DBInfo
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&info); err != nil {
@@ -109,7 +109,7 @@ func HundleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 		return
 	}
 
-	stmt, err := db.Prepare("DELETE FROM favoritelist WHERE imbdID = ?")
+	stmt, err := db.Prepare("DELETE FROM favoritelist WHERE imdbID = ?")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
 		return
