@@ -70,6 +70,10 @@ func main() {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		}
 	})
+
+	log.Println("Server started on: 8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
 }
 
 //参考用コード
