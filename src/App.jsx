@@ -37,7 +37,7 @@ function App() {
           <nav className="header-nav">
             {/*ページリロードなしでURLを切り替えるリンク*/}
             <Link className='link' to={'/search'}>検索</Link>
-            <Link className='link' to={'/favorite'}>お気に入り</Link>
+            <Link className='link' to={'/favorites'}>お気に入り</Link>
           </nav>
         </header>
         <form onSubmit={getInfo} className='search-section'>
