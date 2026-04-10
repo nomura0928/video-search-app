@@ -55,7 +55,7 @@ func main() {
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-
+			HundleAddList(w,r,db)
 		} else if r.Method == http.MethodDelete {
 
 		} else {
@@ -74,6 +74,31 @@ func main() {
 	log.Println("Server started on: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
+
+func HundleAddList(w http.ResponseWriter, r *http.Request, db *sql.DB){
+	var info DBInfo
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&info); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	stmt, err := db.Prepare("INSERT INTO favoritelist (imbdID,Title,Year,Poster) VALUES (?,?,?,?)")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query filed: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(info.ImdbID,info.Title,info.Year,info.Poster)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query failed: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(info)
 }
 
 //参考用コード
