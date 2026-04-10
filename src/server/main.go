@@ -55,7 +55,7 @@ func main() {
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			HundleAddList(w,r,db)
+			HundleAddToList(w,r,db)
 		} else if r.Method == http.MethodDelete {
 
 		} else {
@@ -75,7 +75,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func HundleAddList(w http.ResponseWriter, r *http.Request, db *sql.DB){
+func HundleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	var info DBInfo
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&info); err != nil {
