@@ -12,30 +12,30 @@ import (
 )
 
 type Rating struct {
-	Source string `json/Source`
-	Value string `json/Source`
+	Source string `json:"Source"`
+	Value  string `json:"Value"`
 }
 
 type Info struct {
-    imdbID string `json:imdbID`
-	Title string `json:Title`
-	Year string `json:Year`
-	Genre string `json:Genre`
-	Type string `json:Type`
-	Director string `json:Genre`
-	Writer string `json:Writer`
-	Actor string `json:Actor`
-	Ratings []Rating `json:Ratings`
-	Plot string `json:Plot`
-	Poster string `json:Poster`
-	Response string `json:Response`
+	ImdbID   string   `json:"imdbID"`
+	Title    string   `json:"Title"`
+	Year     string   `json:"Year"`
+	Genre    string   `json:"Genre"`
+	Type     string   `json:"Type"`
+	Director string   `json:"Director"`
+	Writer   string   `json:"Writer"`
+	Actor    string   `json:"Actor"`
+	Ratings  []Rating `json:"Ratings"`
+	Plot     string   `json:"Plot"`
+	Poster   string   `json:"Poster"`
+	Response string   `json:"Response"`
 }
 
 type DBInfo struct {
-	imdbID string `json:imdbID`
-	Title string `json:Title`
-	Year string `json:Year`
-	Poster string `json:Poster`
+	ImdbID string `json:"imdbID"`
+	Title  string `json:"Title"`
+	Year   string `json:"Year"`
+	Poster string `json:"Poster"`
 }
 
 
@@ -63,7 +63,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/fovorites", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/favorites", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 
 		} else {
