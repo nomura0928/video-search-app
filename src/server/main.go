@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
-	"strings"
+	// "strings"
 
 	_ "modernc.org/sqlite"
 )
@@ -57,7 +57,7 @@ func main() {
 		if r.Method == http.MethodPost {
 			HundleAddToList(w,r,db)
 		} else if r.Method == http.MethodDelete {
-
+			HundleDeleteFromList(w,r,db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		}
@@ -93,6 +93,32 @@ func HundleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	_, err = stmt.Exec(info.ImdbID,info.Title,info.Year,info.Poster)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(info)
+}
+
+func HundleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
+	var info DBInfo
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&info); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	stmt, err := db.Prepare("DELETE FROM favoritelist WHERE imbdID = ?")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(info.ImdbID)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
 		return
 	}
 
