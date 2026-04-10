@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReviewList from './ReviewList';
 import './Information.css';
 
@@ -7,6 +7,9 @@ const Information = () => {
     const filmName = useRef();
     const filmYear = useRef();
     const [filmInfo, setInfo] = useState(null);
+    useEffect(() => {
+        console.log(filmInfo);
+    }, [filmInfo])
 
     const getInfo = async (e) => {
         e.preventDefault();
