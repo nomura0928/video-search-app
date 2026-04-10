@@ -122,9 +122,10 @@ func HandleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 		return
 	}
 
+	response := map[string]string{"message": "Successfully deleted"}
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(info)
+	json.NewEncoder(w).Encode(response)
 }
 
 //参考用コード
