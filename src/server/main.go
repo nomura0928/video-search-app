@@ -96,7 +96,7 @@ func HandleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(info)
 }
