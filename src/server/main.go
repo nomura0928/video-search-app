@@ -54,6 +54,8 @@ func main() {
 	)`)
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		//すべてのリクエストを許可
+		w.Header().Set("Access-Control-Allow-Origin","*")
 		if r.Method == http.MethodPost {
 			HandleAddToList(w,r,db)
 		} else if r.Method == http.MethodDelete {
@@ -64,6 +66,7 @@ func main() {
 	})
 
 	http.HandleFunc("/favorites", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin","*")
 		if r.Method == http.MethodGet {
 			HandleGetList(w,r,db)
 		} else {
