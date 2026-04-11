@@ -65,7 +65,7 @@ func main() {
 
 	http.HandleFunc("/favorites", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-
+			HandleGetList(w,r,db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		}
@@ -126,6 +126,28 @@ func HandleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
+	rows,err := db.Query("SELECT * FROM favoritelist")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
+	}
+	defer rows.Close()
+
+	var list []DBInfo
+	for rows.Next(){
+		var info DBInfo
+		if err := rows.Scan(&info.ImdbID,&info.Title,&info.Year,&info.Poster); err != nil {
+			http.Error(w, fmt.Sprintf("Row scan failed: %v",err), http.StatusInternalServerError)
+		}
+
+		list = append(list,info)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type","application/json")
+	json.NewEncoder(w).Encode(list)
 }
 
 //参考用コード
