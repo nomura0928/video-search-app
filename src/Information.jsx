@@ -12,6 +12,7 @@ const Information = () => {
     }, [filmInfo])
 
     const getInfo = async (e) => {
+        //submitのリロードを無効化
         e.preventDefault();
         const name = filmName.current.value;
         const year = filmYear.current.value;
