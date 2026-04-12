@@ -1,6 +1,6 @@
 import { BrowserRouter, Link, Route, Routes, Navigate } from 'react-router-dom'
 import './App.css'
-import Information from './Information';
+import Search from './Search';
 import FavoriteList from './FavoriteList';
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
           {/* リンクごとに表示する内容を切り替える */}
           {/* NavigateでURLを自動的に変更 */}
           <Route path='/' element={<Navigate to='/search'/>} />
-          <Route path='/search' element={<Information />} />
+          <Route path='/search' element={<Search />} />
           <Route path='/favorites' element={<FavoriteList/>} />
         </Routes>
       </BrowserRouter>
