@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import './FavoriteList.css'
 
 const FavoriteList = () => {
   const [favorites,setFavorites] = useState([]);
@@ -14,13 +16,13 @@ const FavoriteList = () => {
   },[])
 
   return (
-    <div>
-      {favorites.map((favorites) =>
-      <div>
-        <img src={favorites.Poster} alt="Poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'}/>
-        <h4>{favorites.Title}</h4>
-        <h4>{favorites.Year}</h4>
-      </div>
+    <div className='favorites-grid'>
+      {favorites.map((favorite) =>
+        <Link key={favorite.imdbID} className='favorite-card' to={`/favorites/${favorite.imdbID}`}>
+          <img src={favorite.Poster} alt="Poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'}/>
+          <h4>{favorite.Title}</h4>
+          <h4>{favorite.Year}</h4>
+        </Link>
       )}
     </div>
   )
