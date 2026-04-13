@@ -128,6 +128,7 @@ func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	rows,err := db.Query("SELECT * FROM favoritelist")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 
@@ -135,6 +136,7 @@ func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	for rows.Next(){
 		var info DBInfo
 		if err := rows.Scan(&info.ImdbID,&info.Title,&info.Year,&info.Poster); err != nil {
+			return
 			http.Error(w, fmt.Sprintf("Row scan failed: %v",err), http.StatusInternalServerError)
 		}
 
