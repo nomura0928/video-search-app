@@ -136,8 +136,8 @@ func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	for rows.Next(){
 		var info DBInfo
 		if err := rows.Scan(&info.ImdbID,&info.Title,&info.Year,&info.Poster); err != nil {
-			return
 			http.Error(w, fmt.Sprintf("Row scan failed: %v",err), http.StatusInternalServerError)
+			return
 		}
 
 		list = append(list,info)
