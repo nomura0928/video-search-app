@@ -1,13 +1,60 @@
+import { useEffect, useState } from 'react';
 import ReviewList from './ReviewList';
 
 const FilmDetail = ({ data }) => {
+
+    const [isFavorite,setIsFavorite] = useState(false);
+
+    useEffect(() => {
+        if(!data) return;
+        //useEffectに直接asyncはつけられない
+        const check = async() => {
+        try{
+            const res = await fetch('http://localhost:8080/favorites');
+            const favorites = await res.json();
+            //some: 配列の中に条件を満たすものがあればtrueを返す
+            setIsFavorite(favorites.some(f => f.imdbID === data.imdbID));
+        } catch(err) {
+            console.log(err);
+        }
+    }
+        check();
+    },[data]);
+
+    const FavoriteButton = async() => {
+        if(isFavorite){
+            try{
+                await fetch('http://localhost:8080/favorites', {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                setIsFavorite(false);
+            } catch(err) {
+                console.log(err);
+            }
+        } else {
+            try{
+                await fetch('http://localhost:8080/favorites', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                setIsFavorite(true);
+            } catch(err) {
+                console.log(err);
+            }
+        }
+    }
+
     if (data && data.Response === 'True') {
         return (
             <figure className='info-top'>
                 <div className='poster-div'>
                     {/* posterが表示できないとき、代替画像を表示 */}
                     <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'} />
-                    <button className='favorite-button'>お気に入り登録</button>
+                    {/* onclick={関数()}とするとレンダリング後即実行されてしまう、()はつけない */}
+                    <button className='favorite-button' onClick={FavoriteButton}>{isFavorite ? 'お気に入り解除' : 'お気に入り登録'}</button>
                 </div>
                 <figcaption className='figcaption'>
                     <table>
