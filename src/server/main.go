@@ -32,6 +32,9 @@ func main() {
 	Year TEXT NOT NULL,
 	Poster TEXT NOT NULL
 	)`)
+	if err != nil {
+		log.Fatalf("Failed to create table: %v", err)
+	}
 
 	http.HandleFunc("/favorites", func(w http.ResponseWriter, r *http.Request) {
 		//すべてのリクエストを許可
