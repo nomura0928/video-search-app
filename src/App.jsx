@@ -2,6 +2,7 @@ import { BrowserRouter, Link, Route, Routes, Navigate } from 'react-router-dom'
 import './App.css'
 import Search from './Search';
 import FavoriteList from './FavoriteList';
+import Favorite from './Favorite'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='/' element={<Navigate to='/search'/>} />
           <Route path='/search' element={<Search />} />
           <Route path='/favorites' element={<FavoriteList/>} />
+          <Route path='/favorites/:imdbID' element={<Favorite/>}/>
         </Routes>
       </BrowserRouter>
     </>
