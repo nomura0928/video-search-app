@@ -4,8 +4,11 @@ import (
 	"database/sql"  // データベースの操作
 	"encoding/json" // JSONのエンコードとデコード
 	"fmt"
+	"io"
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
+	"os"
+
 	// "strings"
 
 	_ "modernc.org/sqlite"
@@ -53,6 +56,15 @@ func main() {
 			HandleDeleteFromList(w,r,db)
 		} else if r.Method == http.MethodGet {
 			HandleGetList(w,r,db)
+		} else {
+			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin","*")
+		if r.Method == http.MethodGet {
+			HandleGetInfo(w,r,db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		}
@@ -137,6 +149,37 @@ func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type","application/json")
 	json.NewEncoder(w).Encode(list)
+}
+
+func HandleGetInfo(w http.ResponseWriter, r *http.Request, db *sql.DB){
+	var req DBInfo
+	req.ImdbID = ""
+	req.Title = ""
+	apikey := os.Getenv("OMDB_API_KEY")
+	var url string
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w,"Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	if req.ImdbID != "" {
+		url = fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&i=%s",apikey,req.ImdbID)
+	} else if req.Title != "" {
+		url = fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&t=%s&y=%s",apikey,req.Title,req.Year)
+	} else {
+		http.Error(w, "imdbID or Title is required", http.StatusBadRequest)
+		return
+	}
+
+	resp, err := http.Get(url)
+	if err != nil {
+		http.Error(w, "Failed to fetch from OMDb", http.StatusBadGateway)
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type","application/json")
+	//resp.Bodyをwにそのままながす
+	io.Copy(w, resp.Body)
 }
 
 //参考用コード
