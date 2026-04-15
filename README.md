@@ -48,7 +48,9 @@ npm run dev
 
 ### バックエンド
 
-今後追加予定
+```bash
+go run main.go
+```
 
 ## 画面
 
