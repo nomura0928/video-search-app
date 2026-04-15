@@ -3,7 +3,6 @@ import FilmDetail from './FilmDetail';
 import './Search.css';
 
 const Search = () => {
-    const apikey = import.meta.env.VITE_OMDB_API_KEY;
     const filmName = useRef();
     const filmYear = useRef();
     const [filmInfo, setInfo] = useState(null);
@@ -19,7 +18,11 @@ const Search = () => {
         if (!name) return;
         try {
             //awaitで非同期処理が完了するまで待つ
-            const res = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&t=${name}&y=${year}`);
+            const res = await fetch(`http://localhost:8080/search`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({'Title': name,'Year': year})
+            });
             const data = await res.json();
             setInfo(data);
         } catch (err) {

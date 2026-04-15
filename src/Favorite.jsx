@@ -10,8 +10,11 @@ const Favorite = () => {
     useEffect(() => {
         const HandleGetInfo = async() => {
             try{
-        const apikey = import.meta.env.VITE_OMDB_API_KEY;
-        const res = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&i=${imdbID}`);
+        const res = await fetch(`http://localhost:8080/search`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({'imdbID': imdbID})
+        });
         const data = await res.json();
         setFilmInfo(data);
     } catch(err) {
