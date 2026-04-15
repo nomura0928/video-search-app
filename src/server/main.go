@@ -11,26 +11,6 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-type Rating struct {
-	Source string `json:"Source"`
-	Value  string `json:"Value"`
-}
-
-type Info struct {
-	ImdbID   string   `json:"imdbID"`
-	Title    string   `json:"Title"`
-	Year     string   `json:"Year"`
-	Genre    string   `json:"Genre"`
-	Type     string   `json:"Type"`
-	Director string   `json:"Director"`
-	Writer   string   `json:"Writer"`
-	Actor    string   `json:"Actor"`
-	Ratings  []Rating `json:"Ratings"`
-	Plot     string   `json:"Plot"`
-	Poster   string   `json:"Poster"`
-	Response string   `json:"Response"`
-}
-
 type DBInfo struct {
 	ImdbID string `json:"imdbID"`
 	Title  string `json:"Title"`
