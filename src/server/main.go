@@ -56,7 +56,15 @@ func main() {
 	http.HandleFunc("/favorites", func(w http.ResponseWriter, r *http.Request) {
 		//すべてのリクエストを許可
 		w.Header().Set("Access-Control-Allow-Origin","*")
-		if r.Method == http.MethodPost {
+		//許可するメソッドを指定
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE")
+		//リクエストヘッダーにContent-Typeの使用を許可
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		//プリフライト
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		} else if r.Method == http.MethodPost {
 			HandleAddToList(w,r,db)
 		} else if r.Method == http.MethodDelete {
 			HandleDeleteFromList(w,r,db)
