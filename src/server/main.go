@@ -120,7 +120,7 @@ func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	}
 	defer rows.Close()
 
-	var list []DBInfo
+	list := []DBInfo{}
 	for rows.Next(){
 		var info DBInfo
 		if err := rows.Scan(&info.ImdbID,&info.Title,&info.Year,&info.Poster); err != nil {
