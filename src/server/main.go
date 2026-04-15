@@ -63,7 +63,12 @@ func main() {
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin","*")
-		if r.Method == http.MethodGet {
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		} else if r.Method == http.MethodPost {
 			HandleGetInfo(w,r,db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
