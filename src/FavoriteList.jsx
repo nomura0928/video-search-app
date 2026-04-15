@@ -15,7 +15,10 @@ const FavoriteList = () => {
     }
   },[])
 
-  return (
+  if(favorites.length === 0){
+    return <h2>お気に入り登録中の映画はありません</h2>
+  } else {
+    return (
     <div className='favorites-grid'>
       {favorites.map((favorite) =>
         <Link key={favorite.imdbID} className='favorite-card' to={`/favorites/${favorite.imdbID}`}>
@@ -26,6 +29,7 @@ const FavoriteList = () => {
       )}
     </div>
   )
+  }
 }
 
 export default FavoriteList
