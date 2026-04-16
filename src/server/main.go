@@ -8,8 +8,7 @@ import (
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
 	"os"
-
-	// "strings"
+	"golang.org/x/crypto/bcrypt"
 
 	_ "modernc.org/sqlite"
 )
@@ -19,6 +18,11 @@ type DBInfo struct {
 	Title  string `json:"Title"`
 	Year   string `json:"Year"`
 	Poster string `json:"Poster"`
+}
+
+type User struct {
+    UserID   string `json:"user_id"`
+    Password string `json:"password"`
 }
 
 
@@ -34,6 +38,14 @@ func main() {
 	Title TEXT NOT NULL,
 	Year TEXT NOT NULL,
 	Poster TEXT NOT NULL
+	)`)
+	if err != nil {
+		log.Fatalf("Failed to create table: %v", err)
+	}
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	user_id TEXT NOT NULL UNIQUE,
+	password TEXT NOT NULL
 	)`)
 	if err != nil {
 		log.Fatalf("Failed to create table: %v", err)
@@ -72,6 +84,21 @@ func main() {
 			HandleGetInfo(w,r,db)
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin","*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		} else if r.Method == http.MethodPost {
+			HandleRegister(w,r,db);
+		} else {
+			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+			return
 		}
 	})
 
@@ -186,6 +213,44 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	w.Header().Set("Content-Type","application/json")
 	//resp.Bodyをwにそのままながす
 	io.Copy(w, resp.Body)
+}
+
+func HandleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB){
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	if user.UserID == "" || user.Password == "" {
+		http.Error(w, "user id and password is required", http.StatusBadRequest)
+		return
+	}
+
+	//パスワードをバイトに変換してからハッシュ化、コストは重くするほど時間が掛かるが解読されづらくなる
+	hashed, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		return
+	}
+
+	stmt, err := db.Prepare("INSERT INTO users (user_id,password) VALUES(?,?)")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query filed: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.UserID,string(hashed))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Database query failed:%v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type","application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully"})
 }
 
 //参考用コード
