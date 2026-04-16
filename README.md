@@ -49,7 +49,7 @@ npm run dev
 ### バックエンド
 
 ```bash
-go run main.go
+OMDB_API_KEY=your_api_key go run main.go
 ```
 
 ## 画面
