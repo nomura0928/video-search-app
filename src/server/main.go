@@ -179,6 +179,7 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	resp, err := http.Get(url)
 	if err != nil {
 		http.Error(w, "Failed to fetch from OMDb", http.StatusBadGateway)
+		return
 	}
 	defer resp.Body.Close()
 
