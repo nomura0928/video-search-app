@@ -8,6 +8,9 @@ import (
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
 	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
 	_ "modernc.org/sqlite"
@@ -96,6 +99,21 @@ func main() {
 			return
 		} else if r.Method == http.MethodPost {
 			HandleRegister(w,r,db);
+		} else {
+			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+			return
+		}
+	})
+
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin","*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		} else if r.Method == http.MethodPost {
+			HandleLogin(w,r,db);
 		} else {
 			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 			return
@@ -251,6 +269,51 @@ func HandleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type","application/json")
 	json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully"})
+}
+
+func HandleLogin(w http.ResponseWriter, r *http.Request, db *sql.DB){
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	//結果が一行しか返ってこない場合はQueryRow
+	row := db.QueryRow("SELECT password FROM users WHERE user_id = ?", user.UserID)
+	var hashedPassword string
+	err = row.Scan(&hashedPassword)
+	if err != nil {
+		//idが違うのか、パスワードが違うのかを判別させないためエラー文は同じにする
+		http.Error(w, "Invalid user_id or password", http.StatusUnauthorized)
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(user.Password))
+	if err != nil {
+		http.Error(w, "Invalid user_id or password", http.StatusUnauthorized)
+		return
+	}
+
+	//ペイロード
+	claims := jwt.MapClaims{
+		"user_id": user.UserID,
+		"exp": time.Now().Add(time.Hour).Unix(),
+	}
+
+	//トークン生成
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+
+	//秘密鍵で書名
+	secretKey := os.Getenv("JWT_SECRET")
+	tokenString, err := token.SignedString([]byte(secretKey))
+	if err != nil {
+		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+		return
+	}
+
+	//writeheaderを省略すると自動的にOKステータスが返る
+	w.Header().Set("Content-Type","application/json")
+	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
 }
 
 //参考用コード
