@@ -319,7 +319,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	}
 
 	//トークン生成
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	//秘密鍵で書名
 	secretKey := os.Getenv("JWT_SECRET")
