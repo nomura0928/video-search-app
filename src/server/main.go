@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -60,12 +61,16 @@ func main() {
 		//許可するメソッドを指定
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE")
 		//リクエストヘッダーにContent-Typeの使用を許可
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		//プリフライト
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
-		} else if r.Method == http.MethodPost {
+		}
+
+		if !checkAuth(w,r){return}
+
+		if r.Method == http.MethodPost {
 			HandleAddToList(w,r,db)
 		} else if r.Method == http.MethodDelete {
 			HandleDeleteFromList(w,r,db)
@@ -122,6 +127,19 @@ func main() {
 
 	log.Println("Server started on: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func checkAuth(w http.ResponseWriter, r *http.Request) bool{
+	tokenString := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	//検証
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
+		return []byte(os.Getenv("JWT_SECRET")), nil
+	})
+	if err != nil || !token.Valid {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return false
+	}
+	return true
 }
 
 func HandleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
