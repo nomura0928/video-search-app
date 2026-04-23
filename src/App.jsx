@@ -3,6 +3,7 @@ import './App.css'
 import Search from './Search';
 import FavoriteList from './FavoriteList';
 import Favorite from './Favorite'
+import Login from './Login';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path='/search' element={<Search />} />
           <Route path='/favorites' element={<FavoriteList/>} />
           <Route path='/favorites/:imdbID' element={<Favorite/>}/>
+          <Route path='/login' element={<Login/>}/>
         </Routes>
       </BrowserRouter>
     </>
