@@ -4,6 +4,7 @@ import Search from './Search';
 import FavoriteList from './FavoriteList';
 import Favorite from './Favorite'
 import Login from './Login';
+import Register from './Register';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path='/favorites' element={<FavoriteList/>} />
           <Route path='/favorites/:imdbID' element={<Favorite/>}/>
           <Route path='/login' element={<Login/>}/>
+          <Route path='/register' element={<Register/>}/>
         </Routes>
       </BrowserRouter>
     </>

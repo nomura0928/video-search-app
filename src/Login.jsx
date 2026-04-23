@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 
 const Login = () => {
@@ -9,7 +9,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const verify = async() => {
+        const handleVerify = async() => {
             try {
                 const token = localStorage.getItem('token');
                 const res = await fetch('http://localhost:8080/verify', {
@@ -23,7 +23,7 @@ const Login = () => {
                 setError(err);
             }
         };
-        verify();
+        handleVerify();
     },[]);
 
     const handleLogin = async(e) => {
@@ -70,6 +70,7 @@ const Login = () => {
                     <button>Login</button>
                 </div>
             </form>
+            <Link to={'/register'}>未登録の方はこちら</Link>
             {error && <p>{error}</p>}
         </div>
     )
