@@ -125,6 +125,23 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/verify", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin","*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		} else if r.Method == http.MethodGet {
+			checkAuth(w,r);
+			return
+		} else {
+			http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+			return
+		}
+	})
+
 	log.Println("Server started on: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
