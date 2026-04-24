@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Route, Routes, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import './App.css'
 import Search from './Search';
@@ -9,11 +9,13 @@ import Register from './Register';
 
 function Header({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
+  //現在のパスを取得
+  const location = useLocation();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    // navigate('/login');
+    if(location.pathname !== '/search') navigate('/login');
   };
 
   return (
