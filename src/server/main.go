@@ -31,7 +31,7 @@ type User struct {
 
 
 func main() {
-	db, err := sql.Open("sqlite", "./favoritelist.db")
+	db, err := sql.Open("sqlite", "./app.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
