@@ -30,7 +30,7 @@ const Favorite = ({ setIsLoggedIn }) => {
     if (!filmInfo) {
         return <p>読み込み中</p>
     } else if (filmInfo.Response) {
-        return <FilmDetail data={filmInfo} />
+        return <FilmDetail data={filmInfo} setIsLoggedIn={setIsLoggedIn} />
     } else {
         return <h2>取得に失敗しました</h2>
     }

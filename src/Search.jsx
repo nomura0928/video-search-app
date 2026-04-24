@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import FilmDetail from './FilmDetail';
 import './Search.css';
 
-const Search = () => {
+const Search = ({ setIsLoggedIn }) => {
     const filmName = useRef();
     const filmYear = useRef();
     const [filmInfo, setInfo] = useState(null);
@@ -47,7 +47,7 @@ const Search = () => {
                     <button className='button' type='submit'>Search</button>
                 </div>
             </form>
-            <FilmDetail data={filmInfo} />
+            <FilmDetail data={filmInfo} setIsLoggedIn={setIsLoggedIn} />
         </>
     )
 }

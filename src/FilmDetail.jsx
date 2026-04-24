@@ -1,16 +1,26 @@
 import { useEffect, useState } from 'react';
 import ReviewList from './ReviewList';
+import { verifyToken } from './utils';
 
-const FilmDetail = ({ data }) => {
+const FilmDetail = ({ data, setIsLoggedIn }) => {
 
     const [isFavorite,setIsFavorite] = useState(false);
+    const [ok,setOk] = useState(false);
+    const token = localStorage.getItem('token');
+
+        useEffect(() => {
+        verifyToken(setIsLoggedIn).then(result => setOk(result));
+        },[]);
 
     useEffect(() => {
         if(!data) return;
+        if(!ok) return;
         //useEffectに直接asyncはつけられない
         const check = async() => {
         try{
-            const res = await fetch('http://localhost:8080/favorites');
+            const res = await fetch('http://localhost:8080/favorites', {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
             const favorites = await res.json();
             //some: 配列の中に条件を満たすものがあればtrueを返す
             setIsFavorite(favorites.some(f => f.imdbID === data.imdbID));
@@ -19,14 +29,17 @@ const FilmDetail = ({ data }) => {
         }
     }
         check();
-    },[data]);
+    },[data, ok]);
 
     const FavoriteButton = async() => {
         if(isFavorite){
             try{
                 await fetch('http://localhost:8080/favorites', {
                     method: 'DELETE',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(data)
                 });
                 setIsFavorite(false);
@@ -37,7 +50,10 @@ const FilmDetail = ({ data }) => {
             try{
                 await fetch('http://localhost:8080/favorites', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(data)
                 });
                 setIsFavorite(true);
@@ -54,7 +70,7 @@ const FilmDetail = ({ data }) => {
                     {/* posterが表示できないとき、代替画像を表示 */}
                     <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'} />
                     {/* onclick={関数()}とするとレンダリング後即実行されてしまう、()はつけない */}
-                    <button className='favorite-button' onClick={FavoriteButton}>{isFavorite ? 'お気に入り解除' : 'お気に入り登録'}</button>
+                    {ok && <button className='favorite-button' onClick={FavoriteButton}>{isFavorite ? 'お気に入り解除' : 'お気に入り登録'}</button>}
                 </div>
                 <figcaption className='figcaption'>
                     <table>

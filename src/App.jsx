@@ -46,7 +46,7 @@ function App() {
           {/* リンクごとに表示する内容を切り替える */}
           {/* NavigateでURLを自動的に変更 */}
           <Route path='/' element={<Navigate to='/search'/>} />
-          <Route path='/search' element={<Search />} />
+          <Route path='/search' element={<Search setIsLoggedIn={setIsLoggedIn}/>} />
           <Route path='/favorites' element={<FavoriteList setIsLoggedIn={setIsLoggedIn}/>} />
           <Route path='/favorites/:imdbID' element={<Favorite setIsLoggedIn={setIsLoggedIn}/>}/>
           <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
