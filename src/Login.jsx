@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate, Link } from "react-router-dom";
+import './Auth.css';
 
 
 const Login = () => {
@@ -55,23 +56,21 @@ const Login = () => {
 
     return(
         <div>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>
-                        <span>User_ID</span>
+            <form onSubmit={handleLogin} className='auth-section'>
+                <div className='input-left'>
+                    <label className='search-div'>
+                        <span className='input-info'>User ID</span>
                         <input type="text" ref={user_id}/>
                     </label>
-                    <label>
-                        <span>Password</span>
+                    <label className='search-div'>
+                        <span className='input-info'>Password</span>
                         <input type="password" ref={password}/>
                     </label>
                 </div>
-                <div>
-                    <button>Login</button>
-                </div>
+                <button className='button'>Login</button>
             </form>
-            <Link to={'/register'}>未登録の方はこちら</Link>
-            {error && <p>{error}</p>}
+            <Link className='auth-link' to={'/register'}>未登録の方はこちら</Link>
+            {error && <p className='auth-error'>{error}</p>}
         </div>
     )
 
