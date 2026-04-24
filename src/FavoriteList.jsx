@@ -5,6 +5,7 @@ import { verifyToken } from './utils';
 
 const FavoriteList = ({ setIsLoggedIn }) => {
     const [favorites, setFavorites] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,10 +22,15 @@ const FavoriteList = ({ setIsLoggedIn }) => {
                 setFavorites(data);
             } catch (err) {
                 console.log(err);
+            } finally {
+                //finallyは成功でも失敗でも必ず実行される
+                setLoading(false);
             }
         };
         getFavoriteList();
     }, [])
+
+    if (loading) return null;
 
     if (favorites.length === 0) {
         return <h2>お気に入り登録中の映画はありません</h2>
