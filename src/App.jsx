@@ -1,4 +1,5 @@
-import { BrowserRouter, Link, Route, Routes, Navigate } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes, Navigate, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import './App.css'
 import Search from './Search';
 import FavoriteList from './FavoriteList';
@@ -6,19 +7,41 @@ import Favorite from './Favorite'
 import Login from './Login';
 import Register from './Register';
 
+function Header({ isLoggedIn, setIsLoggedIn }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    navigate('/login');
+  };
+
+  return (
+    <header>
+      <h1>Video Search</h1>
+      <nav className="header-nav">
+        <Link className='link' to={'/search'}>検索</Link>
+        <Link className='link' to={'/favorites'}>お気に入り</Link>
+      </nav>
+      <div className='header-auth'>
+        {isLoggedIn ? (
+          <button className='header-auth-btn' onClick={handleLogout}>ログアウト</button>
+        ) : (
+          <Link className='link' to={'/login'}>ログイン</Link>
+        )}
+      </div>
+    </header>
+  );
+}
+
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+
   return (
     <>
       {/*ルーティング機能を有効にする範囲を囲む　Link,Route*/}
       <BrowserRouter>
-        <header>
-          <h1>Video Search</h1>
-          <nav className="header-nav">
-            {/*ページリロードなしでURLを切り替えるリンク*/}
-            <Link className='link' to={'/search'}>検索</Link>
-            <Link className='link' to={'/favorites'}>お気に入り</Link>
-          </nav>
-        </header>
+        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <Routes>
           {/* リンクごとに表示する内容を切り替える */}
           {/* NavigateでURLを自動的に変更 */}

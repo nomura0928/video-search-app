@@ -2,6 +2,7 @@
 header {
   background-color: #1A1A1D;
   color: #6976ff;
+  position: relative;
 }
 
 body {
@@ -18,10 +19,46 @@ h1 {
 
 .header-nav {
   display: flex;
-  justify-content: space-between;
-  width: 150px;
+  justify-content: center;
+  gap: 24px;
   margin: 0 auto;
   padding-bottom: 8px;
+}
+
+.header-auth {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.header-auth-btn {
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.header-auth-btn:hover {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.header-auth .link {
+  border: 1px solid #22c55e;
+  color: #22c55e;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.header-auth .link:hover {
+  background-color: #22c55e;
+  color: #fff;
 }
 
 .link {
