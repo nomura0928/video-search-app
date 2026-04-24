@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 import ReviewList from './ReviewList';
-import { verifyToken } from './utils';
 
-const FilmDetail = ({ data, setIsLoggedIn }) => {
+const FilmDetail = ({ data, isLoggedIn, setIsLoggedIn }) => {
 
     const [isFavorite,setIsFavorite] = useState(false);
-    const [ok,setOk] = useState(false);
     const token = localStorage.getItem('token');
-
-        useEffect(() => {
-        verifyToken(setIsLoggedIn).then(result => setOk(result));
-        },[]);
 
     useEffect(() => {
         if(!data) return;
-        if(!ok) return;
+        if(!isLoggedIn) return;
         //useEffectに直接asyncはつけられない
         const check = async() => {
         try{
@@ -29,7 +23,7 @@ const FilmDetail = ({ data, setIsLoggedIn }) => {
         }
     }
         check();
-    },[data, ok]);
+    },[data, isLoggedIn]);
 
     const FavoriteButton = async() => {
         if(isFavorite){
@@ -70,7 +64,7 @@ const FilmDetail = ({ data, setIsLoggedIn }) => {
                     {/* posterが表示できないとき、代替画像を表示 */}
                     <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'} />
                     {/* onclick={関数()}とするとレンダリング後即実行されてしまう、()はつけない */}
-                    {ok && <button className='favorite-button' onClick={FavoriteButton}>{isFavorite ? 'お気に入り解除' : 'お気に入り登録'}</button>}
+                    {isLoggedIn && <button className='favorite-button' onClick={FavoriteButton}>{isFavorite ? 'お気に入り解除' : 'お気に入り登録'}</button>}
                 </div>
                 <figcaption className='figcaption'>
                     <table>
