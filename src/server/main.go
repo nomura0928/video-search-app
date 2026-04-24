@@ -39,6 +39,7 @@ func main() {
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS favoritelist (
 	imdbID PRIMARY KEY NOT NULL,
+	User_id TEXT NOT NULL,
 	Title TEXT NOT NULL,
 	Year TEXT NOT NULL,
 	Poster TEXT NOT NULL
@@ -146,6 +147,18 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+func getUserID(r *http.Request) (string, error){
+	tokenString := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
+		return []byte(os.Getenv("JWT_SECRET")), nil
+	})
+	if err != nil || !token.Valid {
+		return  "", err
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	return claims["user_id"].(string), nil
+}
+
 func checkAuth(w http.ResponseWriter, r *http.Request) bool{
 	tokenString := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 	//検証
@@ -167,14 +180,20 @@ func HandleAddToList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 		return
 	}
 
-	stmt, err := db.Prepare("INSERT INTO favoritelist (imdbID,Title,Year,Poster) VALUES (?,?,?,?)")
+	User_id, err := getUserID(r)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	stmt, err := db.Prepare("INSERT INTO favoritelist (imdbID,User_id,Title,Year,Poster) VALUES (?,?,?,?,?)")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query filed: %v", err), http.StatusInternalServerError)
 		return
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(info.ImdbID,info.Title,info.Year,info.Poster)
+	_, err = stmt.Exec(info.ImdbID,User_id,info.Title,info.Year,info.Poster)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v", err), http.StatusInternalServerError)
 		return
@@ -193,14 +212,20 @@ func HandleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 		return
 	}
 
-	stmt, err := db.Prepare("DELETE FROM favoritelist WHERE imdbID = ?")
+	User_id, err := getUserID(r)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	stmt, err := db.Prepare("DELETE FROM favoritelist WHERE (imdbID = ? AND User_id = ?)")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
 		return
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(info.ImdbID)
+	_, err = stmt.Exec(info.ImdbID,User_id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
 		return
@@ -213,7 +238,13 @@ func HandleDeleteFromList(w http.ResponseWriter, r *http.Request, db *sql.DB){
 }
 
 func HandleGetList(w http.ResponseWriter, r *http.Request, db *sql.DB){
-	rows,err := db.Query("SELECT * FROM favoritelist")
+	User_id, err := getUserID(r)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	rows,err := db.Query("SELECT imdbID, Title, Year, Poster FROM favoritelist WHERE User_id = ?",User_id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Database query failed: %v",err), http.StatusInternalServerError)
 		return
