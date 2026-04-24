@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http" // HTTPでWebサーバーを立てる
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -272,22 +273,23 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request, db *sql.DB){
 	req.ImdbID = ""
 	req.Title = ""
 	apikey := os.Getenv("OMDB_API_KEY")
-	var url string
+	var omdbURL string
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w,"Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
 	if req.ImdbID != "" {
-		url = fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&i=%s",apikey,req.ImdbID)
+		omdbURL = fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&i=%s",apikey,req.ImdbID)
 	} else if req.Title != "" {
-		url = fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&t=%s&y=%s",apikey,req.Title,req.Year)
+		//QueryEscapeで空欄を変換
+		omdbURL = fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&t=%s&y=%s",apikey,url.QueryEscape(req.Title),req.Year)
 	} else {
 		http.Error(w, "imdbID or Title is required", http.StatusBadRequest)
 		return
 	}
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(omdbURL)
 	if err != nil {
 		http.Error(w, "Failed to fetch from OMDb", http.StatusBadGateway)
 		return
