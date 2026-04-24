@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import './Auth.css';
+import { verifyToken } from "./utils";
 
 
-const Register = () => {
+const Register = ({setIsLoggedIn}) => {
     const [error, setError] = useState(null);
     const user_id = useRef();
     const password = useRef();
@@ -12,11 +13,8 @@ const Register = () => {
     useEffect(() => {
         const handleVerify = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:8080/verify', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
+                const ok = await verifyToken(setIsLoggedIn);
+                if (ok) {
                     navigate('/favorites');
                 }
             } catch (err) {

@@ -3,14 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import './FavoriteList.css'
 import { verifyToken } from './utils';
 
-const FavoriteList = () => {
+const FavoriteList = ({ setIsLoggedIn }) => {
     const [favorites, setFavorites] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         const getFavoriteList = async () => {
             try {
-                const ok = await verifyToken();
+                const ok = await verifyToken(setIsLoggedIn);
                 if (!ok) { navigate('/login'); return; }
 
                 const token = localStorage.getItem('token');

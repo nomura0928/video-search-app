@@ -3,7 +3,7 @@ import FilmDetail from './FilmDetail';
 import { useNavigate, useParams } from 'react-router-dom';
 import { verifyToken } from './utils';
 
-const Favorite = () => {
+const Favorite = ({ setIsLoggedIn }) => {
     const [filmInfo, setFilmInfo] = useState();
     const { imdbID } = useParams();
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Favorite = () => {
     useEffect(() => {
         const HandleGetInfo = async () => {
             try {
-                const ok = await verifyToken(navigate);
+                const ok = await verifyToken(setIsLoggedIn);
                 if (!ok) {navigate('/login'); return;}
                 const res = await fetch('http://localhost:8080/search', {
                     method: 'POST',

@@ -47,10 +47,10 @@ function App() {
           {/* NavigateでURLを自動的に変更 */}
           <Route path='/' element={<Navigate to='/search'/>} />
           <Route path='/search' element={<Search />} />
-          <Route path='/favorites' element={<FavoriteList/>} />
-          <Route path='/favorites/:imdbID' element={<Favorite/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/register' element={<Register/>}/>
+          <Route path='/favorites' element={<FavoriteList setIsLoggedIn={setIsLoggedIn}/>} />
+          <Route path='/favorites/:imdbID' element={<Favorite setIsLoggedIn={setIsLoggedIn}/>}/>
+          <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
+          <Route path='/register' element={<Register setIsLoggedIn={setIsLoggedIn}/>}/>
         </Routes>
       </BrowserRouter>
     </>
