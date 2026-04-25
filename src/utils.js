@@ -1,6 +1,6 @@
 export const verifyToken = async (setIsLoggedIn) => {
     const token = localStorage.getItem('token');
-    const res = await fetch('https://video-search-app-3zcd.onrender.com/verify', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/verify`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.status === 401) {

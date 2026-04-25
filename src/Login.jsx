@@ -31,7 +31,7 @@ const Login = ({setIsLoggedIn}) => {
             const id = user_id.current.value;
             const pass = password.current.value;
             if(!id||!pass) {setError('ユーザーIDとパスワードを入力してください'); return;}
-            const res = await fetch('https://video-search-app-3zcd.onrender.com/login', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
                 headers: {'Content-Type': 'application/json'},
                 method: 'POST',
                 body: JSON.stringify({

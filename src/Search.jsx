@@ -18,7 +18,7 @@ const Search = ({ isLoggedIn, setIsLoggedIn }) => {
         if (!name) return;
         try {
             //awaitで非同期処理が完了するまで待つ
-            const res = await fetch(`https://video-search-app-3zcd.onrender.com/search`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/search`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({'Title': name,'Year': year})

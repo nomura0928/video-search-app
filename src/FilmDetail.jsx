@@ -12,7 +12,7 @@ const FilmDetail = ({ data, isLoggedIn, setIsLoggedIn }) => {
         //useEffectに直接asyncはつけられない
         const check = async() => {
         try{
-            const res = await fetch('https://video-search-app-3zcd.onrender.com/favorites', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/favorites`, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
             const favorites = await res.json();
@@ -28,7 +28,7 @@ const FilmDetail = ({ data, isLoggedIn, setIsLoggedIn }) => {
     const FavoriteButton = async() => {
         if(isFavorite){
             try{
-                await fetch('https://video-search-app-3zcd.onrender.com/favorites', {
+                await fetch(`${import.meta.env.VITE_API_URL}/favorites`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ const FilmDetail = ({ data, isLoggedIn, setIsLoggedIn }) => {
             }
         } else {
             try{
-                await fetch('https://video-search-app-3zcd.onrender.com/favorites', {
+                await fetch(`${import.meta.env.VITE_API_URL}/favorites`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
