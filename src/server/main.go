@@ -159,8 +159,13 @@ func main() {
     http.FileServer(http.Dir("./dist")).ServeHTTP(w, r)
     })
 
-	log.Println("Server started on: 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+
+    log.Println("Server started on:", port)
+    log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func getUserID(r *http.Request) (string, error){
