@@ -148,8 +148,8 @@ func main() {
     path := "./dist" + r.URL.Path
 
     // ファイルが存在するかチェック
-    info, err := os.Stat(path);
-	if os.IsNotExist(err) || !info.IsDir() {
+    _, err := os.Stat(path);
+	if os.IsNotExist(err) {
         // なければReactに任せる
         http.ServeFile(w, r, "./dist/index.html")
         return
