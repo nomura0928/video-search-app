@@ -62,7 +62,7 @@ const FilmDetail = ({ data, isLoggedIn, setIsLoggedIn }) => {
             <figure className='info-top'>
                 <div className='poster-div'>
                     {/* posterが表示できないとき、代替画像を表示 */}
-                    <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/src/assets/noimage.jpg'} />
+                    <img src={data.Poster} alt="poster" onError={(e) => e.target.src = '/noimage.jpg'} />
                     {/* onclick={関数()}とするとレンダリング後即実行されてしまう、()はつけない */}
                     {isLoggedIn && <button className='favorite-button' onClick={FavoriteButton}>{isFavorite ? 'お気に入り解除' : 'お気に入り登録'}</button>}
                 </div>
