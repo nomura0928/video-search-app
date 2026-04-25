@@ -19,7 +19,7 @@ const Register = ({setIsLoggedIn}) => {
                 }
             } catch (err) {
                 console.log(err);
-                setError(err);
+                setError(err.message);
             }
         };
         handleVerify();
@@ -46,7 +46,7 @@ const Register = ({setIsLoggedIn}) => {
             navigate('/login');
         } catch (err) {
             console.log(err);
-            setError(err);
+            setError(err.message);
         }
     }
 

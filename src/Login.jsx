@@ -19,7 +19,7 @@ const Login = ({setIsLoggedIn}) => {
                 }
             } catch (err) {
                 console.log(err);
-                setError(err);
+                setError(err.message);
             }
         };
         handleVerify();
@@ -49,7 +49,7 @@ const Login = ({setIsLoggedIn}) => {
             navigate('/favorites');
         } catch(err) {
             console.log(err);
-            setError(err);
+            setError(err.message);
         }
     }
 
