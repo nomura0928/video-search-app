@@ -4,6 +4,7 @@ export const verifyToken = async (setIsLoggedIn) => {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.status === 401) {
+        localStorage.removeItem('token');
         setIsLoggedIn(false);
         return false;
     }
