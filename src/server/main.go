@@ -144,6 +144,21 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    path := "./dist" + r.URL.Path
+
+    // ファイルが存在するかチェック
+    info, err := os.Stat(path);
+	if os.IsNotExist(err) || !info.IsDir() {
+        // なければReactに任せる
+        http.ServeFile(w, r, "./dist/index.html")
+        return
+    }
+
+    // あれば普通に返す（JSやCSSなど）
+    http.FileServer(http.Dir("./dist")).ServeHTTP(w, r)
+    })
+
 	log.Println("Server started on: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
