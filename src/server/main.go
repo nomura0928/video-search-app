@@ -350,6 +350,10 @@ func HandleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB){
 
 	_, err = stmt.Exec(user.UserID,string(hashed))
 	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			http.Error(w, "User ID already exists", http.StatusConflict)
+			return
+		}
 		http.Error(w, fmt.Sprintf("Database query failed:%v", err), http.StatusInternalServerError)
 		return
 	}

@@ -39,6 +39,10 @@ const Register = ({setIsLoggedIn}) => {
                     'password': pass
                 })
             });
+            if (res.status === 409) {
+                setError('このユーザーIDはすでに使用されています');
+                return;
+            }
             if (!res.ok) {
                 setError('登録に失敗しました');
                 return;
