@@ -31,7 +31,7 @@ const Register = ({setIsLoggedIn}) => {
             const id = user_id.current.value;
             const pass = password.current.value;
             if (!id || !pass) { setError('ユーザーIDとパスワードを入力してください'); return; }
-            const res = await fetch('http://localhost:8080/register', {
+            const res = await fetch('https://video-search-app-3zcd.onrender.com/register', {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify({

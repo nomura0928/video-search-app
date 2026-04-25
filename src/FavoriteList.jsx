@@ -15,7 +15,7 @@ const FavoriteList = ({ setIsLoggedIn }) => {
                 if (!ok) { navigate('/login'); return; }
 
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:8080/favorites', {
+                const res = await fetch('https://video-search-app-3zcd.onrender.com/favorites', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();

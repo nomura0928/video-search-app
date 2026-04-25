@@ -13,7 +13,7 @@ const Favorite = ({ isLoggedIn, setIsLoggedIn }) => {
             try {
                 const ok = await verifyToken(setIsLoggedIn);
                 if (!ok) {navigate('/login'); return;}
-                const res = await fetch('http://localhost:8080/search', {
+                const res = await fetch('https://video-search-app-3zcd.onrender.com/search', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 'imdbID': imdbID })
